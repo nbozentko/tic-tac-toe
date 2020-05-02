@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
+import '../css/styles.css'
 
 export default class Board extends React.Component {
     constructor(props) {
@@ -12,7 +13,7 @@ export default class Board extends React.Component {
                 ['', '', ''],
             ],
             currentTurn: '',
-            gameIsOver: false
+            gameIsOver: false     
         }
 
         this.checkForWin = this.checkForWin.bind(this);
@@ -31,11 +32,77 @@ export default class Board extends React.Component {
     }
 
     checkForWin() {
+        let i,j;
+        let winner=''
+        let checkXWinHorizontal, checkYWinHorizontal, checkXWinVertical, checkYWinVertical =0;
+        let {board,gameIsOver} = this.state;
+        let checkGame = gameIsOver;
 
+        // Check Horizontal and Vertical.... gotta fix this 
+        for (i=0;i<3;i++){
+            checkXWinHorizontal = checkYWinHorizontal = checkXWinVertical = checkYWinVertical=0;
+            for (j=0;j<3;j++){
+                if (board[i][j]==="X"){
+                    checkXWinHorizontal+=1;
+                    if (checkXWinHorizontal==3){
+                        checkGame=true; 
+                        winner="X"
+                    }                                      
+                }
+                else{
+                    if (board[i][j]==="O"){
+                        checkYWinHorizontal+=1;
+                        if (checkYWinHorizontal==3){
+                            checkGame=true;
+                            winner="O"
+                        }                          
+                    }
+                }
+                if (board[j][i]=="X"){
+                    checkXWinVertical+=1;
+                    if (checkXWinVertical==3){
+                        checkGame=true;
+                        winner="X"
+                    }                      
+                }
+                else{
+                    if (board[j][i]==="O"){
+                        checkYWinVertical+=1;
+                        if (checkYWinVertical==3){
+                            checkGame=true;
+                            winner="O";
+                        }                         
+                    }
+                }
+            }
+        }
+
+        // Check Diag
+        if (board[0][0]===board[1][1] && board[1][1]===board[2][2] && board[0][0]!=''){
+            checkGame=true; 
+            winner=board[0][0];
+        }
+        
+        if (board[0][2]===board[1][1] && board[1][1]===board[2][0] && board[0][2]!=''){
+            checkGame=true; 
+            winner=board[0][2];
+        }
+        
+
+        if (checkGame){
+            document.getElementById('winner').innerHTML = "The winner is " + winner
+            document.getElementById('winner').style.display='inline';
+        }
+        
+        this.setState({ gameIsOver: checkGame }); 
+        
     }
+        
+
 
     handleTileClick(e) {
-        if (e.target.getAttribute('value')) {
+        let {gameIsOver} = this.state;
+        if (e.target.getAttribute('value') || gameIsOver) {
             console.log('Invalid move');
             return false;
         }
@@ -116,6 +183,8 @@ export default class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
+                <div id="winner">
+                </div>
             </Box>
         )
     }
