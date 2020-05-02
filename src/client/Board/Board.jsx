@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
-import '../css/styles.css'
 
 export default class Board extends React.Component {
     constructor(props) {
@@ -13,7 +12,7 @@ export default class Board extends React.Component {
                 ['', '', ''],
             ],
             currentTurn: '',
-            gameIsOver: false     
+            winner: ''
         }
 
         this.checkForWin = this.checkForWin.bind(this);
@@ -31,78 +30,72 @@ export default class Board extends React.Component {
         });
     }
 
-    checkForWin() {
-        let i,j;
-        let winner=''
-        let checkXWinHorizontal, checkYWinHorizontal, checkXWinVertical, checkYWinVertical =0;
-        let {board,gameIsOver} = this.state;
-        let checkGame = gameIsOver;
+    checkForWin(board) {
+        let i, j;
+        let winner = '';
 
-        // Check Horizontal and Vertical.... gotta fix this 
-        for (i=0;i<3;i++){
-            checkXWinHorizontal = checkYWinHorizontal = checkXWinVertical = checkYWinVertical=0;
-            for (j=0;j<3;j++){
-                if (board[i][j]==="X"){
-                    checkXWinHorizontal+=1;
-                    if (checkXWinHorizontal==3){
-                        checkGame=true; 
-                        winner="X"
-                    }                                      
-                }
-                else{
-                    if (board[i][j]==="O"){
-                        checkYWinHorizontal+=1;
-                        if (checkYWinHorizontal==3){
-                            checkGame=true;
-                            winner="O"
-                        }                          
-                    }
-                }
-                if (board[j][i]=="X"){
-                    checkXWinVertical+=1;
-                    if (checkXWinVertical==3){
-                        checkGame=true;
-                        winner="X"
-                    }                      
-                }
-                else{
-                    if (board[j][i]==="O"){
-                        checkYWinVertical+=1;
-                        if (checkYWinVertical==3){
-                            checkGame=true;
-                            winner="O";
-                        }                         
+        // Check horizontal win
+        for (i = 0; i < 3; i++) {
+            let possibleWinner = board[i][0];
+            for (j = 0; j < 3; j++) {
+                if (possibleWinner !== board[i][j]) {
+                    break;
+                } else {
+                    if (j === 2) {
+                        winner = possibleWinner;
                     }
                 }
             }
         }
 
-        // Check Diag
-        if (board[0][0]===board[1][1] && board[1][1]===board[2][2] && board[0][0]!=''){
-            checkGame=true; 
-            winner=board[0][0];
+        // Check vertical win
+        for (i = 0; i < 3; i++) {
+            let possibleWinner = board[0][i];
+            for (j = 0; j < 3; j++) {
+                if (possibleWinner !== board[j][i]) {
+                    break;
+                } else {
+                    if (j === 2) {
+                        winner = possibleWinner;
+                    }
+                }
+            }
         }
-        
-        if (board[0][2]===board[1][1] && board[1][1]===board[2][0] && board[0][2]!=''){
-            checkGame=true; 
-            winner=board[0][2];
-        }
-        
 
-        if (checkGame){
-            document.getElementById('winner').innerHTML = "The winner is " + winner
-            document.getElementById('winner').style.display='inline';
+        // Check diag top left to bottom right
+        for (i = 0; i < 3; i++) {
+            let possibleWinner = board[0][0];
+            if (board[i][i] !== possibleWinner) {
+                break;
+            } else {
+                if (i === 2) {
+                    winner = possibleWinner;
+                }
+            }
         }
-        
-        this.setState({ gameIsOver: checkGame }); 
-        
+
+        // Check diag bottom left to top right
+        for (i = 0; i < 3; i++) {
+            let possibleWinner = board[0][2];
+            if (board[i][2 - i] !== possibleWinner) {
+                break;
+            } else {
+                if (i === 2) {
+                    winner = possibleWinner;
+                }
+            }
+        }
+
+        this.setState({
+            winner: winner
+        });
     }
-        
-
 
     handleTileClick(e) {
-        let {gameIsOver} = this.state;
-        if (e.target.getAttribute('value') || gameIsOver) {
+        let {
+            winner
+        } = this.state;
+        if (e.target.getAttribute('value') || !!winner) {
             console.log('Invalid move');
             return false;
         }
@@ -116,13 +109,14 @@ export default class Board extends React.Component {
             board: board,
             currentTurn: currentTurn === 'X' ? 'O' : 'X'
         });
-        this.checkForWin();
+        this.checkForWin(board);
     }
 
     render() {
         let {
             board,
-            currentTurn
+            currentTurn,
+            winner
         } = this.state;
 
         return (
@@ -183,8 +177,10 @@ export default class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-                <div id="winner">
-                </div>
+                {
+                    winner && // If winner
+                    <div>The winner is {winner}</div>
+                }
             </Box>
         )
     }
