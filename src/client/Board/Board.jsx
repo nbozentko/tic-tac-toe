@@ -31,61 +31,63 @@ export default class Board extends React.Component {
     }
 
     checkForWin(board) {
-        let i, j;
         let winner = '';
 
         // Check horizontal win
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             let possibleWinner = board[i][0];
-            for (j = 0; j < 3; j++) {
-                if (possibleWinner !== board[i][j]) {
-                    break;
-                } else {
-                    if (j === 2) {
+            for (let j = 0; j < 3; j++) {
+                if (possibleWinner === board[i][j]) {
+                    if (j === 2 && possibleWinner) {
                         winner = possibleWinner;
+                        console.log(winner)
                     }
+                } else {
+                    break;
                 }
             }
         }
+        console.log(winner)
 
         // Check vertical win
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             let possibleWinner = board[0][i];
-            for (j = 0; j < 3; j++) {
-                if (possibleWinner !== board[j][i]) {
-                    break;
-                } else {
-                    if (j === 2) {
+            for (let j = 0; j < 3; j++) {
+                if (possibleWinner === board[j][i]) {
+                    if (j === 2 && possibleWinner) {
                         winner = possibleWinner;
                     }
+                } else {
+                    break;
                 }
             }
         }
 
         // Check diag top left to bottom right
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             let possibleWinner = board[0][0];
             if (board[i][i] !== possibleWinner) {
                 break;
             } else {
-                if (i === 2) {
+                if (i === 2 && possibleWinner) {
                     winner = possibleWinner;
                 }
             }
         }
 
         // Check diag bottom left to top right
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             let possibleWinner = board[0][2];
             if (board[i][2 - i] !== possibleWinner) {
                 break;
             } else {
-                if (i === 2) {
+                if (i === 2 && possibleWinner) {
                     winner = possibleWinner;
                 }
             }
         }
 
+        console.log(winner)
         this.setState({
             winner: winner
         });
