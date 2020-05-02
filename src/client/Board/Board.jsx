@@ -124,7 +124,8 @@ export default class Board extends React.Component {
         return (
             <Box style={{
                 position: 'absolute', left: '50%', top: '40%',
-                transform: 'translate(-50%, -50%)'
+                transform: 'translate(-50%, -50%)',
+                textAlign:"center"
             }}>
                 <h3>Current Turn: {currentTurn}</h3>
                 <table>
@@ -204,8 +205,8 @@ class BoardTile extends React.Component {
         } = this.props;
 
         let cellStyle = {
-            width: '50px',
-            height: '50px',
+            width: '150px',
+            height: '150px',
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
