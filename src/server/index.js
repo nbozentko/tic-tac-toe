@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
     });
 });
 setInterval(() => {
-    io.emit("test", " some data :) " + counter);
+    io.emit("test", " some data :) ");
 }, 3000)
 
 
