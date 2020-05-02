@@ -122,7 +122,10 @@ export default class Board extends React.Component {
         } = this.state;
 
         return (
-            <Box>
+            <Box style={{
+                position: 'absolute', left: '50%', top: '40%',
+                transform: 'translate(-50%, -50%)'
+            }}>
                 <h3>Current Turn: {currentTurn}</h3>
                 <table>
                     <tbody>
