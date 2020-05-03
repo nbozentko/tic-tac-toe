@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import Brightness1OutlinedIcon from '@material-ui/icons/Brightness1Outlined';
 
 export default class Board extends React.Component {
     constructor(props) {
@@ -28,6 +30,7 @@ export default class Board extends React.Component {
         this.setState({
             currentTurn: Math.random() < 0.5 ? 'X' : 'O'
         });
+       
     }
 
     checkForWin(board) {
@@ -115,6 +118,7 @@ export default class Board extends React.Component {
     }
 
     render() {
+        
         let {
             board,
             currentTurn,
@@ -122,17 +126,19 @@ export default class Board extends React.Component {
         } = this.state;
 
         return (
+            
             <Box style={{
                 position: 'absolute', left: '50%', top: '40%',
                 transform: 'translate(-50%, -50%)',
                 textAlign:"center"
             }}>
                 <h3>Current Turn: {currentTurn}</h3>
+                
                 <table>
                     <tbody>
                         <tr>
                             <BoardTile
-                                piece={board[0][0]}
+                                piece={(board[0][0])}             
                                 handleClick={this.handleTileClick}
                                 position={[0, 0]}
                             />
@@ -198,6 +204,7 @@ class BoardTile extends React.Component {
     }
 
     render() {
+        
         let {
             piece,
             handleClick,
@@ -210,9 +217,16 @@ class BoardTile extends React.Component {
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontSize: "40px"
         }
 
+        if (piece=="X"){
+            piece=<CloseOutlinedIcon style={{fontSize:"50px"}}/>
+        }
+        else if (piece=="O") {
+            piece=<Brightness1OutlinedIcon style={{fontSize:"50px"}}/>
+        }
         return (
             <td
                 onClick={handleClick}
