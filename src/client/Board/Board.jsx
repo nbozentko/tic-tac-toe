@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import Brightness1OutlinedIcon from '@material-ui/icons/Brightness1Outlined';
 
@@ -14,7 +15,8 @@ export default class Board extends React.Component {
                 ['', '', ''],
             ],
             currentTurn: '',
-            winner: ''
+            winner: '',
+            gameIsOver: false
         }
 
         this.checkForWin = this.checkForWin.bind(this);
@@ -30,7 +32,7 @@ export default class Board extends React.Component {
         this.setState({
             currentTurn: Math.random() < 0.5 ? 'X' : 'O'
         });
-       
+
     }
 
     checkForWin(board) {
@@ -90,17 +92,28 @@ export default class Board extends React.Component {
             }
         }
 
-        console.log(winner)
+        // Check if game board is full
+        let boardIsFull = true;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] === '') {
+                    boardIsFull = false;
+                    break;
+                }
+            }
+        }
+
         this.setState({
-            winner: winner
+            winner: winner,
+            gameIsOver: boardIsFull || !!winner
         });
     }
 
     handleTileClick(e) {
         let {
-            winner
+            gameIsOver
         } = this.state;
-        if (e.target.getAttribute('value') || !!winner) {
+        if (e.target.getAttribute('value') || gameIsOver) {
             console.log('Invalid move');
             return false;
         }
@@ -118,27 +131,33 @@ export default class Board extends React.Component {
     }
 
     render() {
-        
         let {
             board,
             currentTurn,
-            winner
+            winner,
+            gameIsOver
         } = this.state;
 
+        let {
+            closeGame
+        } = this.props;
+
+        let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
+
         return (
-            
+
             <Box style={{
                 position: 'absolute', left: '50%', top: '40%',
                 transform: 'translate(-50%, -50%)',
-                textAlign:"center"
+                textAlign: "center"
             }}>
-                <h3>Current Turn: {currentTurn}</h3>
-                
+                <h2>Current Turn: {currentTurnIcon}</h2>
+
                 <table>
                     <tbody>
                         <tr>
                             <BoardTile
-                                piece={(board[0][0])}             
+                                piece={(board[0][0])}
                                 handleClick={this.handleTileClick}
                                 position={[0, 0]}
                             />
@@ -190,8 +209,22 @@ export default class Board extends React.Component {
                     </tbody>
                 </table>
                 {
-                    winner && // If winner
-                    <div>The winner is {winner}</div>
+                    gameIsOver &&
+                    <div>
+                        {
+                            !!winner ?
+                                <div>The winner is {winner}</div>
+                                :
+                                <div>Tie!</div>
+                        }
+                        <Button
+                            onClick={closeGame}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Back to Main Page
+                        </Button>
+                    </div>
                 }
             </Box>
         )
@@ -204,7 +237,7 @@ class BoardTile extends React.Component {
     }
 
     render() {
-        
+
         let {
             piece,
             handleClick,
@@ -221,11 +254,11 @@ class BoardTile extends React.Component {
             fontSize: "40px"
         }
 
-        if (piece=="X"){
-            piece=<CloseOutlinedIcon style={{fontSize:"50px"}}/>
+        if (piece == "X") {
+            piece = <CloseOutlinedIcon style={{ fontSize: "50px" }} />
         }
-        else if (piece=="O") {
-            piece=<Brightness1OutlinedIcon style={{fontSize:"50px"}}/>
+        else if (piece == "O") {
+            piece = <Brightness1OutlinedIcon style={{ fontSize: "50px" }} />
         }
         return (
             <td
