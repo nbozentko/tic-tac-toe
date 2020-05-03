@@ -139,8 +139,13 @@ export default class Board extends React.Component {
         } = this.state;
 
         let {
-            closeGame
+            closeGame,
+            socket,
+            myPiece,
+            opponent
         } = this.props;
+
+        console.log(socket);
 
         let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
 
@@ -151,6 +156,9 @@ export default class Board extends React.Component {
                 transform: 'translate(-50%, -50%)',
                 textAlign: "center"
             }}>
+                <h5>You opponent is {opponent}</h5>
+                <h5>You are {myPiece}</h5>
+                <br></br>
                 <h2>Current Turn: {currentTurnIcon}</h2>
 
                 <table>
