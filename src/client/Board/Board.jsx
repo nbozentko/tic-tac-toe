@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import Brightness1OutlinedIcon from '@material-ui/icons/Brightness1Outlined';
 
 export default class Board extends React.Component {
     constructor(props) {
@@ -12,6 +15,7 @@ export default class Board extends React.Component {
                 ['', '', ''],
             ],
             currentTurn: '',
+            winner: '',
             gameIsOver: false
         }
 
@@ -28,14 +32,88 @@ export default class Board extends React.Component {
         this.setState({
             currentTurn: Math.random() < 0.5 ? 'X' : 'O'
         });
+
     }
 
-    checkForWin() {
+    checkForWin(board) {
+        let winner = '';
 
+        // Check horizontal win
+        for (let i = 0; i < 3; i++) {
+            let possibleWinner = board[i][0];
+            for (let j = 0; j < 3; j++) {
+                if (possibleWinner === board[i][j]) {
+                    if (j === 2 && possibleWinner) {
+                        winner = possibleWinner;
+                        console.log(winner)
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        console.log(winner)
+
+        // Check vertical win
+        for (let i = 0; i < 3; i++) {
+            let possibleWinner = board[0][i];
+            for (let j = 0; j < 3; j++) {
+                if (possibleWinner === board[j][i]) {
+                    if (j === 2 && possibleWinner) {
+                        winner = possibleWinner;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // Check diag top left to bottom right
+        for (let i = 0; i < 3; i++) {
+            let possibleWinner = board[0][0];
+            if (board[i][i] !== possibleWinner) {
+                break;
+            } else {
+                if (i === 2 && possibleWinner) {
+                    winner = possibleWinner;
+                }
+            }
+        }
+
+        // Check diag bottom left to top right
+        for (let i = 0; i < 3; i++) {
+            let possibleWinner = board[0][2];
+            if (board[i][2 - i] !== possibleWinner) {
+                break;
+            } else {
+                if (i === 2 && possibleWinner) {
+                    winner = possibleWinner;
+                }
+            }
+        }
+
+        // Check if game board is full
+        let boardIsFull = true;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] === '') {
+                    boardIsFull = false;
+                    break;
+                }
+            }
+        }
+
+        this.setState({
+            winner: winner,
+            gameIsOver: boardIsFull || !!winner
+        });
     }
 
     handleTileClick(e) {
-        if (e.target.getAttribute('value')) {
+        let {
+            gameIsOver
+        } = this.state;
+        if (e.target.getAttribute('value') || gameIsOver) {
             console.log('Invalid move');
             return false;
         }
@@ -49,23 +127,37 @@ export default class Board extends React.Component {
             board: board,
             currentTurn: currentTurn === 'X' ? 'O' : 'X'
         });
-        this.checkForWin();
+        this.checkForWin(board);
     }
 
     render() {
         let {
             board,
-            currentTurn
+            currentTurn,
+            winner,
+            gameIsOver
         } = this.state;
 
+        let {
+            closeGame
+        } = this.props;
+
+        let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
+
         return (
-            <Box>
-                <h3>Current Turn: {currentTurn}</h3>
+
+            <Box style={{
+                position: 'absolute', left: '50%', top: '40%',
+                transform: 'translate(-50%, -50%)',
+                textAlign: "center"
+            }}>
+                <h2>Current Turn: {currentTurnIcon}</h2>
+
                 <table>
                     <tbody>
                         <tr>
                             <BoardTile
-                                piece={board[0][0]}
+                                piece={(board[0][0])}
                                 handleClick={this.handleTileClick}
                                 position={[0, 0]}
                             />
@@ -116,6 +208,24 @@ export default class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
+                {
+                    gameIsOver &&
+                    <div>
+                        {
+                            !!winner ?
+                                <div>The winner is {winner}</div>
+                                :
+                                <div>Tie!</div>
+                        }
+                        <Button
+                            onClick={closeGame}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Back to Main Page
+                        </Button>
+                    </div>
+                }
             </Box>
         )
     }
@@ -127,6 +237,7 @@ class BoardTile extends React.Component {
     }
 
     render() {
+
         let {
             piece,
             handleClick,
@@ -134,14 +245,21 @@ class BoardTile extends React.Component {
         } = this.props;
 
         let cellStyle = {
-            width: '50px',
-            height: '50px',
+            width: '150px',
+            height: '150px',
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontSize: "40px"
         }
 
+        if (piece == "X") {
+            piece = <CloseOutlinedIcon style={{ fontSize: "50px" }} />
+        }
+        else if (piece == "O") {
+            piece = <Brightness1OutlinedIcon style={{ fontSize: "50px" }} />
+        }
         return (
             <td
                 onClick={handleClick}

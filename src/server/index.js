@@ -21,9 +21,6 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     });
 });
-setInterval(() => {
-    io.emit("test", " some data :) ");
-}, 3000)
 
 
 module.exports = router;
