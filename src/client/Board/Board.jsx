@@ -213,14 +213,15 @@ export default class Board extends React.Component {
                     <div>
                         {
                             !!winner ?
-                                <div>The winner is {winner}</div>
+                                <div style = {{fontSize: '30px'}}> <br></br> The winner is {winner} <br></br></div>
                                 :
-                                <div>Tie!</div>
+                                <div><br></br>Tie!<br></br></div>
                         }
                         <Button
                             onClick={closeGame}
                             variant="contained"
                             color="primary"
+                            style = {{marginTop:'20px'}}
                         >
                             Back to Main Page
                         </Button>
@@ -247,6 +248,7 @@ class BoardTile extends React.Component {
         let cellStyle = {
             width: '150px',
             height: '150px',
+            minWidth: '150px',
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
