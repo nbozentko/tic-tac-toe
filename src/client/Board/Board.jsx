@@ -228,15 +228,17 @@ export default class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
+                
                 {
                     gameIsOver &&
                     <div>
                         {
                             !!winner ?
-                                <div>The winner is {winner}</div>
+                                <div style={pieceStyling}> <br></br>The winner is {winner}</div>
                                 :
-                                <div>Tie!</div>
+                                <div style={pieceStyling}><br></br>Tie!</div>
                         }
+                        <br></br>
                         <Button
                             onClick={closeGame}
                             variant="contained"
