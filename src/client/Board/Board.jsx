@@ -150,6 +150,16 @@ export default class Board extends React.Component {
 
         let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
 
+        const opponentStyling = {
+            fontSize:'26px',
+            fontFamily:'Verdana',
+            border:'1px solid black',
+            padding:'15px'
+        }
+        const pieceStyling = {
+            fontSize:'20px',
+            fontFamily:'Verdana'
+        }
         return (
 
             <Box style={{
@@ -157,8 +167,9 @@ export default class Board extends React.Component {
                 transform: 'translate(-50%, -50%)',
                 textAlign: "center"
             }}>
-                <h5>You opponent is {opponentName}</h5>
-                <h5>You are {myPiece}</h5>
+                <div style= {opponentStyling} >Your opponent is {opponentName}</div>
+                <br></br>
+                <div style= {pieceStyling}> You are {myPiece} </div>
                 <br></br>
                 <h2>Current Turn: {currentTurnIcon}</h2>
 

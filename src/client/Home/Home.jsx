@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import socketIOClient from 'socket.io-client';
 import Board from '../Board/Board';
 
@@ -108,12 +109,13 @@ export default class Home extends React.Component {
 function NewGameScreen(props) {
     return (
         <div>
-            <label>Enter your name</label>
-            <input
+            <label style={{marginRight: '10px'}}>Enter your name:</label>
+            <TextField 
                 name="name"
                 value={props.name}
                 onChange={props.handleChange}
-            />
+            >
+            </TextField>
             <br></br>
             <Button
                 size={'large'}
