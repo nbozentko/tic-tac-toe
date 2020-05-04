@@ -142,7 +142,8 @@ export default class Board extends React.Component {
             closeGame,
             socket,
             myPiece,
-            opponent
+            opponent,
+            opponentName
         } = this.props;
 
         console.log(socket);
@@ -156,7 +157,7 @@ export default class Board extends React.Component {
                 transform: 'translate(-50%, -50%)',
                 textAlign: "center"
             }}>
-                <h5>You opponent is {opponent}</h5>
+                <h5>You opponent is {opponentName}</h5>
                 <h5>You are {myPiece}</h5>
                 <br></br>
                 <h2>Current Turn: {currentTurnIcon}</h2>

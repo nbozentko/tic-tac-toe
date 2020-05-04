@@ -13,25 +13,30 @@ export default class Home extends React.Component {
             isSearchingForGame: false,
             roomNumber: '',
             myPiece: '',
-            socket: {}
+            socket: {},
+            name: '',
+            opponentName: ''
         }
 
         this.searchForGame = this.searchForGame.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     searchForGame() {
         let {
-            isSearchingForGame
+            isSearchingForGame,
+            name
         } = this.state;
         if (!isSearchingForGame) {
-            let socket = socketIOClient('/gameRoom');
+            let socket = socketIOClient(`/gameRoom?name=${name}`, { name, name });
             this.setState({ socket: socket })
             socket.on('gameFound', msg => {
                 console.log(msg);
                 this.setState({
                     gameOpen: true,
                     opponent: msg.opponent,
-                    myPiece: msg.piece
+                    myPiece: msg.piece,
+                    opponentName: msg.opponentName
                 });
             });
         } else {
@@ -45,13 +50,21 @@ export default class Home extends React.Component {
         })
     }
 
+    handleChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
     render() {
         let {
             gameOpen,
             isSearchingForGame,
             socket,
             myPiece,
-            opponent
+            opponent,
+            name,
+            opponentName
         } = this.state;
 
         return (
@@ -76,22 +89,45 @@ export default class Home extends React.Component {
                             socket={socket}
                             myPiece={myPiece}
                             opponent={opponent}
+                            opponentName={opponentName}
                         /> :
-                        <Button
-                            size={'large'}
-                            variant="contained"
-                            color="primary"
-                            onClick={this.searchForGame}
-                        >
-                            {isSearchingForGame ? 'Stop Searching' : 'Start Game'}
-                        </Button>
+                        <NewGameScreen
+                            searchForGame={this.searchForGame}
+                            isSearchingForGame={isSearchingForGame}
+                            name={name}
+                            handleChange={this.handleChange}
+                        />
                 }
-                {
-                    (isSearchingForGame && !gameOpen) &&
-                    <div>Searching...</div>
-                }
+
 
             </Grid>
         )
     }
+}
+
+function NewGameScreen(props) {
+    return (
+        <div>
+            <label>Enter your name</label>
+            <input
+                name="name"
+                value={props.name}
+                onChange={props.handleChange}
+            />
+            <br></br>
+            <Button
+                size={'large'}
+                variant="contained"
+                color="primary"
+                onClick={props.searchForGame}
+            >
+                {props.isSearchingForGame ? 'Stop Searching' : 'Start Game'}
+            </Button>
+            {
+                (props.isSearchingForGame) &&
+                <div>Searching...</div>
+            }
+        </div>
+    )
+
 }
