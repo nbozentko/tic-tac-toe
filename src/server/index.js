@@ -22,19 +22,26 @@ searchingRoom.on('connection', socket => {
     if (gameQueue.length > 1) {
         let player1 = gameQueue.shift();
         let player2 = gameQueue.shift();
+        let firstTurn = Math.random() < 0.5 ? 'X' : 'O';
 
         io.of('/gameRoom').to(player1.id).emit('gameFound', {
-            opponent: player2.id,
+            opponentId: player2.id,
             piece: 'X',
-            opponentName: player2.handshake.query.name
+            opponentName: player2.handshake.query.name,
+            firstTurn: firstTurn
         });
 
         io.of('/gameRoom').to(player2.id).emit('gameFound', {
-            opponent: player1.id,
+            opponentId: player1.id,
             piece: 'O',
-            opponentName: player1.handshake.query.name
+            opponentName: player1.handshake.query.name,
+            firstTurn: firstTurn
         });
     }
+
+    socket.on('move', move => {
+        io.of('/gameRoom').to(move.to).emit('move', move.board);
+    })
 })
 
 
