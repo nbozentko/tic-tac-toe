@@ -257,6 +257,7 @@ export default class Board extends React.Component {
                     <div>
                         {
                             !!winner ?
+
                             <Card>
                             <CardContent>
                                 <Typography variant="h5" component="h2">
@@ -272,6 +273,7 @@ export default class Board extends React.Component {
                                         </Typography>        
                                     </CardContent>
                                 </Card>
+
                         }
                         <br></br>
                         <Button
@@ -304,6 +306,7 @@ class BoardTile extends React.Component {
         let cellStyle = {
             width: '150px',
             height: '150px',
+            minWidth: '150px',
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
