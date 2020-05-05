@@ -21,13 +21,13 @@ export default class Board extends React.Component {
                 ['', '', ''],
                 ['', '', ''],
             ],
-            currentTurn: '',
+            currentTurn: this.props.firstTurn,
             winner: '',
-            gameIsOver: false
+            gameIsOver: false,
+            socket: this.props.socket
         }
 
         this.checkForWin = this.checkForWin.bind(this);
-        this.determineFirstTurn = this.determineFirstTurn.bind(this);
         this.handleTileClick = this.handleTileClick.bind(this);
      
     }
@@ -35,14 +35,20 @@ export default class Board extends React.Component {
  
 
     componentDidMount() {
-        this.determineFirstTurn();
-    }
-
-    determineFirstTurn() {
-        this.setState({
-            currentTurn: Math.random() < 0.5 ? 'X' : 'O'
+        let {
+            socket,
+            myPiece
+        } = this.props;
+        socket.on('move', newBoard => {
+            this.checkForWin(newBoard);
+            this.setState({
+                board: newBoard,
+                currentTurn: myPiece
+            });
         });
-
+        this.setState({
+            socket: socket
+        })
     }
 
     checkForWin(board) {
@@ -55,14 +61,12 @@ export default class Board extends React.Component {
                 if (possibleWinner === board[i][j]) {
                     if (j === 2 && possibleWinner) {
                         winner = possibleWinner;
-                        console.log(winner)
                     }
                 } else {
                     break;
                 }
             }
         }
-        console.log(winner)
 
         // Check vertical win
         for (let i = 0; i < 3; i++) {
@@ -121,18 +125,27 @@ export default class Board extends React.Component {
 
     handleTileClick(e) {
         let {
-            gameIsOver
+            gameIsOver,
+            board,
+            currentTurn,
+            socket
         } = this.state;
-        if (e.target.getAttribute('value') || gameIsOver) {
-            console.log('Invalid move');
+        let {
+            myPiece,
+            opponentId
+        } = this.props;
+        if (e.target.getAttribute('value') || gameIsOver || currentTurn !== myPiece) {
             return false;
         }
-        let {
-            board,
-            currentTurn
-        } = this.state;
-        let position = e.target.getAttribute('name').split(',');
+        let posStr = e.target.getAttribute('name')
+        let position = posStr.split(',');
         board[position[0]][position[1]] = currentTurn;
+
+        socket.emit('move', {
+            to: opponentId,
+            board: board
+        });
+
         this.setState({
             board: board,
             currentTurn: currentTurn === 'X' ? 'O' : 'X'
@@ -150,13 +163,10 @@ export default class Board extends React.Component {
 
         let {
             closeGame,
-            socket,
             myPiece,
-            opponent,
+            opponent: opponentId,
             opponentName
         } = this.props;
-
-        console.log(socket);
 
         let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
 

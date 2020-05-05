@@ -16,7 +16,9 @@ export default class Home extends React.Component {
             myPiece: '',
             socket: {},
             name: '',
-            opponentName: ''
+            opponentName: '',
+            oppoenentId: '',
+            firstTurn: ''
         }
 
         this.searchForGame = this.searchForGame.bind(this);
@@ -32,12 +34,13 @@ export default class Home extends React.Component {
             let socket = socketIOClient(`/gameRoom?name=${name}`, { name, name });
             this.setState({ socket: socket })
             socket.on('gameFound', msg => {
-                console.log(msg);
                 this.setState({
                     gameOpen: true,
-                    opponent: msg.opponent,
+                    opponentId: msg.opponentId,
                     myPiece: msg.piece,
-                    opponentName: msg.opponentName
+                    opponentName: msg.opponentName,
+                    firstTurn: msg.firstTurn,
+                    isSearchingForGame: false
                 });
             });
         } else {
@@ -63,9 +66,10 @@ export default class Home extends React.Component {
             isSearchingForGame,
             socket,
             myPiece,
-            opponent,
+            opponentId,
             name,
-            opponentName
+            opponentName,
+            firstTurn
         } = this.state;
 
         return (
@@ -89,8 +93,9 @@ export default class Home extends React.Component {
                             closeGame={() => this.setState({ gameOpen: false })}
                             socket={socket}
                             myPiece={myPiece}
-                            opponent={opponent}
+                            opponentId={opponentId}
                             opponentName={opponentName}
+                            firstTurn={firstTurn}
                         /> :
                         <NewGameScreen
                             searchForGame={this.searchForGame}
