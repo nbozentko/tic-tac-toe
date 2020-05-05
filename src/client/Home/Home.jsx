@@ -110,12 +110,16 @@ function NewGameScreen(props) {
     return (
         <div>
             <label style={{marginRight: '10px'}}>Enter your name:</label>
+            <br></br>
+            <br></br>
             <TextField 
                 name="name"
                 value={props.name}
                 onChange={props.handleChange}
+                variant="outlined"        
             >
             </TextField>
+            <br></br>
             <br></br>
             <Button
                 size={'large'}
