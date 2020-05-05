@@ -3,12 +3,19 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import Brightness1OutlinedIcon from '@material-ui/icons/Brightness1Outlined';
+import MuiAlert from '@material-ui/lab/Alert';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 export default class Board extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.state = { 
             board: [
                 ['', '', ''],
                 ['', '', ''],
@@ -22,7 +29,10 @@ export default class Board extends React.Component {
         this.checkForWin = this.checkForWin.bind(this);
         this.determineFirstTurn = this.determineFirstTurn.bind(this);
         this.handleTileClick = this.handleTileClick.bind(this);
+     
     }
+
+ 
 
     componentDidMount() {
         this.determineFirstTurn();
@@ -139,19 +149,52 @@ export default class Board extends React.Component {
         } = this.state;
 
         let {
-            closeGame
+            closeGame,
+            socket,
+            myPiece,
+            opponent,
+            opponentName
         } = this.props;
+
+        console.log(socket);
 
         let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
 
+        const opponentStyling = {
+            width: '50%',
+            margin: '0 auto'
+        }
+        const pieceStyling = {
+            fontSize:'20px',
+            fontFamily:'Verdana'
+        }
         return (
 
             <Box style={{
-                position: 'absolute', left: '50%', top: '40%',
+                position: 'absolute', left: '50%', top: '45%',
                 transform: 'translate(-50%, -50%)',
                 textAlign: "center"
             }}>
-                <h2>Current Turn: {currentTurnIcon}</h2>
+                <Alert style={opponentStyling} severity="info">Your opponent is {opponentName} </Alert>
+                <br></br>
+                <Card>
+                    <CardContent>
+                        <Typography variant="h5" component="h2">
+                        {
+                            myPiece=="X"?
+                            <div> You are: <CloseOutlinedIcon style={{ component: "h2" }}/> </div> 
+                            :
+                            <div> You are: <Brightness1OutlinedIcon style={{component:'h2'}} /> </div> 
+                        }
+                        
+                        <br></br>
+                        <br></br>
+                        <div style={{component:'h2'}}> Current Turn: {currentTurnIcon} </div>
+                        </Typography>        
+                    </CardContent>
+                </Card>
+                <br></br>
+
 
                 <table>
                     <tbody>
@@ -208,20 +251,35 @@ export default class Board extends React.Component {
                         </tr>
                     </tbody>
                 </table>
+                <br></br>
                 {
                     gameIsOver &&
                     <div>
                         {
                             !!winner ?
-                                <div style = {{fontSize: '30px'}}> <br></br> The winner is {winner} <br></br></div>
+
+                            <Card>
+                            <CardContent>
+                                <Typography variant="h5" component="h2">
+                                    <div> The winner is {winner} </div>
+                                    </Typography>        
+                                </CardContent>
+                            </Card>
                                 :
-                                <div><br></br>Tie!<br></br></div>
+                                <Card>
+                                <CardContent>
+                                    <Typography variant="h5" component="h2">
+                                        <div> Tie! </div>
+                                        </Typography>        
+                                    </CardContent>
+                                </Card>
+
                         }
+                        <br></br>
                         <Button
                             onClick={closeGame}
                             variant="contained"
-                            color="primary"
-                            style = {{marginTop:'20px'}}
+                            color="default"
                         >
                             Back to Main Page
                         </Button>

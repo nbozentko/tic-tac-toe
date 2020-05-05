@@ -13,11 +13,35 @@ app.use(express.static('dist'))
 
 server.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
 
-// Test
+let gameQueue = [];
+
+let searchingRoom = io.of('/gameRoom');
+searchingRoom.on('connection', socket => {
+    console.log(socket.handshake.query.name)
+    gameQueue.push(socket);
+    if (gameQueue.length > 1) {
+        let player1 = gameQueue.shift();
+        let player2 = gameQueue.shift();
+
+        io.of('/gameRoom').to(player1.id).emit('gameFound', {
+            opponent: player2.id,
+            piece: 'X',
+            opponentName: player2.handshake.query.name
+        });
+
+        io.of('/gameRoom').to(player2.id).emit('gameFound', {
+            opponent: player1.id,
+            piece: 'O',
+            opponentName: player1.handshake.query.name
+        });
+    }
+})
+
+
 io.on('connection', (socket) => {
     console.log('a user connected');
-    io.emit("test", "a new client has connected");
-    socket.on('disconnect', () => {
+    socket.on('disconnect', client => {
+        console.log(client.id + ' disconnected')
         console.log('user disconnected');
     });
 });
