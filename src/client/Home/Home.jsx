@@ -84,7 +84,7 @@ export default class Home extends React.Component {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    margin: 'auto'
+                    margin: '0 auto'
                 }}
             >
                 {
@@ -114,7 +114,7 @@ export default class Home extends React.Component {
 function NewGameScreen(props) {
     return (
         <div>
-            <label style={{marginRight: '10px'}}>Enter your name:</label>
+            <label style={{marginLeft:'32px'}}>Enter your name:</label>
             <br></br>
             <br></br>
             <TextField 
@@ -127,6 +127,7 @@ function NewGameScreen(props) {
             <br></br>
             <br></br>
             <Button
+                style={{margin:'0 auto', display:'block'}}
                 size={'large'}
                 variant="contained"
                 color="primary"
@@ -134,9 +135,10 @@ function NewGameScreen(props) {
             >
                 {props.isSearchingForGame ? 'Stop Searching' : 'Start Game'}
             </Button>
+            <br></br>
             {
                 (props.isSearchingForGame) &&
-                <div>Searching...</div>
+                <div style={{marginLeft:'55px'}} >Searching...</div>
             }
         </div>
     )

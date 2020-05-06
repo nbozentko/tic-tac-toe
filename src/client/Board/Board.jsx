@@ -181,8 +181,7 @@ export default class Board extends React.Component {
         return (
 
             <Box style={{
-                position: 'absolute', left: '50%', top: '45%',
-                transform: 'translate(-50%, -50%)',
+                margin: '0 auto',
                 textAlign: "center"
             }}>
                 <Alert style={opponentStyling} severity="info">Your opponent is {opponentName} </Alert>
@@ -206,7 +205,7 @@ export default class Board extends React.Component {
                 <br></br>
 
 
-                <table>
+                <table style={{tableLayout: 'fixed'}}>
                     <tbody>
                         <tr>
                             <BoardTile
@@ -314,9 +313,8 @@ class BoardTile extends React.Component {
         } = this.props;
 
         let cellStyle = {
-            width: '150px',
-            height: '150px',
-            minWidth: '150px',
+            width: '120px',
+            height: '120px',
             borderStyle: 'solid',
             borderWidth: '2px',
             margin: '0px',
