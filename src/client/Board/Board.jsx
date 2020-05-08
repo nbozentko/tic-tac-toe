@@ -10,12 +10,12 @@ import Typography from '@material-ui/core/Typography';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
+}
 export default class Board extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { 
+        this.state = {
             board: [
                 ['', '', ''],
                 ['', '', ''],
@@ -29,10 +29,8 @@ export default class Board extends React.Component {
 
         this.checkForWin = this.checkForWin.bind(this);
         this.handleTileClick = this.handleTileClick.bind(this);
-     
+        this.closeGame = this.closeGame.bind(this);
     }
-
- 
 
     componentDidMount() {
         let {
@@ -46,6 +44,9 @@ export default class Board extends React.Component {
                 currentTurn: myPiece
             });
         });
+        socket.on('opponentLeft', opp => {
+            alert('Your opponent left');
+        })
         this.setState({
             socket: socket
         })
@@ -153,6 +154,14 @@ export default class Board extends React.Component {
         this.checkForWin(board);
     }
 
+    closeGame() {
+        let { socket } = this.state;
+
+        socket.disconnect();
+        this.setState({ socket: {} });
+        this.props.closeGame();
+    }
+
     render() {
         let {
             board,
@@ -175,8 +184,8 @@ export default class Board extends React.Component {
             margin: '0 auto'
         }
         const pieceStyling = {
-            fontSize:'20px',
-            fontFamily:'Verdana'
+            fontSize: '20px',
+            fontFamily: 'Verdana'
         }
         return (
 
@@ -189,23 +198,23 @@ export default class Board extends React.Component {
                 <Card>
                     <CardContent>
                         <Typography variant="h5" component="h2">
-                        {
-                            myPiece=="X"?
-                            <div> You are: <CloseOutlinedIcon style={{ component: "h2" }}/> </div> 
-                            :
-                            <div> You are: <Brightness1OutlinedIcon style={{component:'h2'}} /> </div> 
-                        }
-                        
-                        <br></br>
-                        <br></br>
-                        <div style={{component:'h2'}}> Current Turn: {currentTurnIcon} </div>
-                        </Typography>        
+                            {
+                                myPiece == "X" ?
+                                    <div> You are: <CloseOutlinedIcon style={{ component: "h2" }} /> </div>
+                                    :
+                                    <div> You are: <Brightness1OutlinedIcon style={{ component: 'h2' }} /> </div>
+                            }
+
+                            <br></br>
+                            <br></br>
+                            <div style={{ component: 'h2' }}> Current Turn: {currentTurnIcon} </div>
+                        </Typography>
                     </CardContent>
                 </Card>
                 <br></br>
 
 
-                <table style={{tableLayout: 'fixed'}}>
+                <table style={{ tableLayout: 'fixed' }}>
                     <tbody>
                         <tr>
                             <BoardTile
@@ -267,26 +276,26 @@ export default class Board extends React.Component {
                         {
                             !!winner ?
 
-                            <Card>
-                            <CardContent>
-                                <Typography variant="h5" component="h2">
-                                    <div> The winner is {winner} </div>
-                                    </Typography>        
-                                </CardContent>
-                            </Card>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h5" component="h2">
+                                            <div> The winner is {winner} </div>
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
                                 :
                                 <Card>
-                                <CardContent>
-                                    <Typography variant="h5" component="h2">
-                                        <div> Tie! </div>
-                                        </Typography>        
+                                    <CardContent>
+                                        <Typography variant="h5" component="h2">
+                                            <div> Tie! </div>
+                                        </Typography>
                                     </CardContent>
                                 </Card>
 
                         }
                         <br></br>
                         <Button
-                            onClick={closeGame}
+                            onClick={this.closeGame}
                             variant="contained"
                             color="default"
                         >

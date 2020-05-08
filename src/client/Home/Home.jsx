@@ -28,10 +28,18 @@ export default class Home extends React.Component {
     searchForGame() {
         let {
             isSearchingForGame,
-            name
+            name,
+            socket
         } = this.state;
+
+        this.setState(prevState => {
+            return {
+                isSearchingForGame: !prevState.isSearchingForGame
+            }
+        })
+
         if (!isSearchingForGame) {
-            let socket = socketIOClient(`/gameRoom?name=${name}`, { name, name });
+            socket = socketIOClient(`/gameRoom?name=${name}`, { name, name });
             this.setState({ socket: socket })
             socket.on('gameFound', msg => {
                 this.setState({
@@ -44,14 +52,10 @@ export default class Home extends React.Component {
                 });
             });
         } else {
+            socket.emit('stopSearch', 'done')
             socket.disconnect();
+            this.setState({ socket: {} })
         }
-
-        this.setState(prevState => {
-            return {
-                isSearchingForGame: !prevState.isSearchingForGame
-            }
-        })
     }
 
     handleChange(e) {
@@ -84,7 +88,7 @@ export default class Home extends React.Component {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    margin: '0 auto'
+                    margin: 'auto'
                 }}
             >
                 {
@@ -114,20 +118,20 @@ export default class Home extends React.Component {
 function NewGameScreen(props) {
     return (
         <div>
-            <label style={{marginLeft:'32px'}}>Enter your name:</label>
+            <label style={{ marginLeft: '32px' }}>Enter your name:</label>
             <br></br>
             <br></br>
-            <TextField 
+            <TextField
                 name="name"
                 value={props.name}
                 onChange={props.handleChange}
-                variant="outlined"        
+                variant="outlined"
             >
             </TextField>
             <br></br>
             <br></br>
             <Button
-                style={{margin:'0 auto', display:'block'}}
+                style={{ margin: '0 auto', display: 'block' }}
                 size={'large'}
                 variant="contained"
                 color="primary"
@@ -135,10 +139,9 @@ function NewGameScreen(props) {
             >
                 {props.isSearchingForGame ? 'Stop Searching' : 'Start Game'}
             </Button>
-            <br></br>
             {
                 (props.isSearchingForGame) &&
-                <div style={{marginLeft:'55px'}} >Searching...</div>
+                <div style={{ marginLeft: '55px' }}>Searching...</div>
             }
         </div>
     )
