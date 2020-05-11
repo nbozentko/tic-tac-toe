@@ -7,6 +7,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import Chat from '../Chat/Chat';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -167,14 +168,16 @@ export default class Board extends React.Component {
             board,
             currentTurn,
             winner,
-            gameIsOver
+            gameIsOver,
+            socket
         } = this.state;
 
         let {
             closeGame,
             myPiece,
-            opponent: opponentId,
-            opponentName
+            opponentId,
+            opponentName,
+            myName
         } = this.props;
 
         let currentTurnIcon = currentTurn === 'X' ? <CloseOutlinedIcon /> : <Brightness1OutlinedIcon />
@@ -303,6 +306,12 @@ export default class Board extends React.Component {
                         </Button>
                     </div>
                 }
+                <Chat
+                    socket={socket}
+                    opponentName={opponentName}
+                    opponentId={opponentId}
+                    myName={myName}
+                />
             </Box>
         )
     }
