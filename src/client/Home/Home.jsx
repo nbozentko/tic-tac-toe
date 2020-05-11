@@ -100,6 +100,7 @@ export default class Home extends React.Component {
                             opponentId={opponentId}
                             opponentName={opponentName}
                             firstTurn={firstTurn}
+                            myName={name}
                         /> :
                         <NewGameScreen
                             searchForGame={this.searchForGame}

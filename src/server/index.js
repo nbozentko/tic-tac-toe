@@ -45,6 +45,10 @@ searchingRoom.on('connection', socket => {
         io.of('/gameRoom').to(move.to).emit('move', move.board);
     });
 
+    socket.on('chat', msg => {
+        io.of('/gameRoom').to(msg.to).emit('chat', msg);
+    });
+
     socket.on('stopSearch', () => {
         console.log(socket.id + ' stopped searching');
         gameQueue = gameQueue.filter(c => c.id !== socket.id);
