@@ -1,13 +1,13 @@
 FROM node:10
 
-# Copy all our files
-COPY . .
-
-# Install webpack
-RUN npm install webpack
+# Copy package files
+COPY package*.json .
 
 # Install dependencies
 RUN npm install
+
+# Copy all our files
+COPY . .
 
 # Expose port 8080
 EXPOSE 8080
