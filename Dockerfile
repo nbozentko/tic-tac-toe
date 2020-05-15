@@ -1,13 +1,13 @@
 FROM node:10
 
 # Copy package files
-COPY package*.json .
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy all our files
-COPY . .
+COPY . ./
 
 # Expose port 8080
 EXPOSE 8080
