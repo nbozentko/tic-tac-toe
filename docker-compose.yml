@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+   tic-tac-toe:
+     image: tic-tac-toe:latest
+     expose:
+       - 8080
+     restart: always
+     environment:
+       VIRTUAL_HOST: ec2-3-21-76-173.us-east-2.compute.amazonaws.com
+     container_name: tic-tac-toe
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
