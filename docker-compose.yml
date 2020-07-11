@@ -7,7 +7,7 @@ services:
        - 8080
      restart: always
      environment:
-       VIRTUAL_HOST: ec2-3-21-76-173.us-east-2.compute.amazonaws.com
+       VIRTUAL_HOST: ec2-3-15-120-253.us-east-2.compute.amazonaws.com
      container_name: tic-tac-toe
 
 networks:
