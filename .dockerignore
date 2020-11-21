@@ -1,3 +1,4 @@
 .gitignore
 .eslintrc.json
 nodemon.json
+node_modules/
